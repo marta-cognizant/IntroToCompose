@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import com.example.introtocompose.components.InpoutField
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
+import com.example.introtocompose.ulil.calculateTotalPerPerson
 import com.example.introtocompose.ulil.calculateTotalTip
 import com.example.introtocompose.widgets.RoundIconButton
 
@@ -138,7 +139,7 @@ fun BillForm(
         mutableStateOf(0.0)
     }
 
-    TopHeader()
+    TopHeader(totalPerPerson = totalPerPersonState.value)
     Surface(
         modifier = Modifier
             .padding(2.dp)
@@ -228,6 +229,11 @@ fun BillForm(
                             Log.d("Finished", "BillForm: ${sliderPositionState.value}")
                             tipAmountState.value = calculateTotalTip(
                                 totalBill = totalBillState.value.toDouble(),
+                                tipPercentage = tipPercentage
+                            )
+                            totalPerPersonState.value = calculateTotalPerPerson(
+                                totalBill = totalBillState.value.toDouble(),
+                                splitBy = splitByState.value,
                                 tipPercentage = tipPercentage
                             )
                         })
