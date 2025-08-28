@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import com.example.introtocompose.components.InpoutField
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
+import com.example.introtocompose.ulil.calculateTotalTip
 import com.example.introtocompose.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
@@ -240,12 +241,6 @@ fun BillForm(
 
 
 }
-
-fun calculateTotalTip(totalBill: Double, tipPercentage: Int): Double {
-    return if (totalBill > 1 && totalBill.toString().isNotEmpty())
-        (totalBill * tipPercentage) / 100 else 0.0
-}
-
 
 @Preview(showBackground = true)
 @Composable
