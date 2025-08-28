@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +27,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.dp
 import com.example.introtocompose.components.InpoutField
 import com.example.introtocompose.ui.theme.IntroToComposeTheme
@@ -61,13 +63,7 @@ class MainActivity : ComponentActivity() {
 fun MyApp(content: @Composable () -> Unit) {
     IntroToComposeTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                content()
-            }
+            content()
         }
     }
 }
@@ -106,15 +102,33 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
 @Preview
 @Composable
 fun MainContent() {
-    BillForm() { billAmt ->
-        Log.d("AMT", "MainContent: $billAmt")
+    val splitByState = remember {
+        mutableIntStateOf(1)
+    }
+    val billAmountState = remember {
+        mutableDoubleStateOf(0.0)
+    }
+    val totalPerPersonState = remember {
+        mutableDoubleStateOf(0.0)
+    }
+    Column(modifier = Modifier.padding(all = 12.dp)) {
+        BillForm(
+            splitByState = splitByState,
+            billAmountState = billAmountState,
+            totalPerPersonState = totalPerPersonState
+        ) { billAmt ->
+            Log.d("AMT", "MainContent: $billAmt")
+        }
     }
 }
 
-@Preview
 @Composable
 fun BillForm(
     modifier: Modifier = Modifier,
+    range: IntRange = 1..100,
+    splitByState: MutableState<Int>,
+    billAmountState: MutableState<Double>,
+    totalPerPersonState: MutableState<Double>,
     onValChange: (String) -> Unit = {},
 ) {
     val totalBillState = remember {
@@ -124,20 +138,11 @@ fun BillForm(
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val splitByState = remember {
-        mutableStateOf(1)
-    }
-    val range = IntRange(start = 1, endInclusive = 100)
     val sliderPositionState = remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
     val tipPercentage = (sliderPositionState.value * 100).toInt()
-    val tipAmountState = remember {
-        mutableStateOf(0.0)
-    }
-    val totalPerPersonState = remember {
-        mutableStateOf(0.0)
-    }
+
 
     TopHeader(totalPerPerson = totalPerPersonState.value)
     Surface(
@@ -182,6 +187,11 @@ fun BillForm(
                                 if (splitByState.value > 1) {
                                     splitByState.value -= 1
                                 }
+                                totalPerPersonState.value = calculateTotalPerPerson(
+                                    totalBill = totalBillState.value.toDouble(),
+                                    splitBy = splitByState.value,
+                                    tipPercentage = tipPercentage
+                                )
                             })
                         Text(
                             text = "${splitByState.value}",
@@ -195,6 +205,11 @@ fun BillForm(
                                 if (splitByState.value < range.last) {
                                     splitByState.value += 1
                                 }
+                                totalPerPersonState.value = calculateTotalPerPerson(
+                                    totalBill = totalBillState.value.toDouble(),
+                                    splitBy = splitByState.value,
+                                    tipPercentage = tipPercentage
+                                )
                             })
                     }
                 }
@@ -206,7 +221,7 @@ fun BillForm(
                     )
                     Spacer(modifier = Modifier.width(200.dp))
                     Text(
-                        text = "$${tipAmountState.value}",
+                        text = "$${billAmountState.value}",
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     )
                 }
@@ -227,7 +242,7 @@ fun BillForm(
                         steps = 5,
                         onValueChangeFinished = {
                             Log.d("Finished", "BillForm: ${sliderPositionState.value}")
-                            tipAmountState.value = calculateTotalTip(
+                            billAmountState.value = calculateTotalTip(
                                 totalBill = totalBillState.value.toDouble(),
                                 tipPercentage = tipPercentage
                             )
