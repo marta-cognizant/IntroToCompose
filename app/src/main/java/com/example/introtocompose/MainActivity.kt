@@ -19,7 +19,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             IntroToComposeTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    NoteScreen()
+                    
+                    NoteScreen(notes = emptyList(), onAddNote = {}, onRemoveNote = {})
                 }
             }
         }
