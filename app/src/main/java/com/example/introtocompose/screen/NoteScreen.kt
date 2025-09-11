@@ -42,6 +42,9 @@ import com.example.introtocompose.data.NotesDataSource
 import com.example.introtocompose.model.Note
 import java.time.format.DateTimeFormatter
 
+
+val LIST_OF_CHARS = arrayOf('.', ',', '!', '?', '-', ':')
+
 @Composable
 fun NoteScreen(
     notes: List<Note>,
@@ -78,7 +81,7 @@ fun NoteScreen(
                 label = "Title",
                 onTextChange = {
                     if (it.all { char ->
-                            char.isLetter() || char.isWhitespace() || char.isDigit()
+                            char.isLetter() || char.isWhitespace() || char.isDigit() || (char in LIST_OF_CHARS)
                         }) title = it
                 }
             )
@@ -88,7 +91,7 @@ fun NoteScreen(
                 label = "Add a note",
                 onTextChange = {
                     if (it.all { char ->
-                            char.isLetter() || char.isWhitespace() || char.isDigit()
+                            char.isLetter() || char.isWhitespace() || char.isDigit() || (char in LIST_OF_CHARS)
                         }) description = it
                 }
             )
