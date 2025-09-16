@@ -33,14 +33,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.introtocompose.R
 import com.example.introtocompose.components.NoteButton
 import com.example.introtocompose.components.NoteInputText
-import com.example.introtocompose.data.NotesDataSource
 import com.example.introtocompose.model.Note
-import java.time.format.DateTimeFormatter
+import com.example.introtocompose.util.formatDate
 
 
 val LIST_OF_CHARS = arrayOf('.', ',', '!', '?', '-', ':')
@@ -149,16 +147,10 @@ fun NoteRow(
             Text(text = note.title, style = MaterialTheme.typography.titleMedium)
             Text(text = note.description, style = MaterialTheme.typography.titleSmall)
             Text(
-                text = note.entryDate.format(DateTimeFormatter.ofPattern("EEE, d MMM")),
+                text = formatDate(note.entryDate.time),
                 style = MaterialTheme.typography.labelSmall
             )
         }
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NoteScreenPreview() {
-    NoteScreen(notes = NotesDataSource().loadNotes(), onAddNote = {}, onRemoveNote = {})
 }
