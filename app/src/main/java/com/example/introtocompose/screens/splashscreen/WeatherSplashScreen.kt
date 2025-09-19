@@ -1,4 +1,4 @@
-package com.example.introtocompose.screens
+package com.example.introtocompose.screens.splashscreen
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
