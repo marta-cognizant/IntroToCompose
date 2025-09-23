@@ -34,6 +34,7 @@ import com.example.introtocompose.R
 import com.example.introtocompose.data.DataOrException
 import com.example.introtocompose.model.Weather
 import com.example.introtocompose.utils.formatDate
+import com.example.introtocompose.utils.formatDateTime
 import com.example.introtocompose.utils.formatDecimals
 import com.example.introtocompose.widgets.WeatherAppBar
 
@@ -107,7 +108,8 @@ fun MainContent(data: Weather) {
             ) {
                 WeatherStateImage(imageUrl = imageUrl)
                 Text(
-                    text = temperature, style = MaterialTheme.typography.headlineLarge,
+                    text = temperature,
+                    style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
                 Text(text = description, fontStyle = FontStyle.Italic)
@@ -115,6 +117,42 @@ fun MainContent(data: Weather) {
         }
         HumidityWindPressureRow(weather = data)
         Divider()
+        SunsetSunriseRow(weather = data)
+    }
+
+}
+
+@Composable
+fun SunsetSunriseRow(weather: Weather) {
+    Row(
+        modifier = Modifier
+            .padding(top = 15.dp, bottom = 6.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.sunrise),
+                contentDescription = "Sunrise",
+                modifier = Modifier.size(30.dp)
+            )
+            Text(
+                text = formatDateTime(weather.list[0].sunrise),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Row(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.sunset),
+                contentDescription = "Sunset",
+                modifier = Modifier.size(30.dp)
+            )
+            Text(
+                text = formatDateTime(weather.list[0].sunset),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 
@@ -134,8 +172,7 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.list[0].humidity}%",
-                style = MaterialTheme.typography.bodyMedium
+                text = "${weather.list[0].humidity}%", style = MaterialTheme.typography.bodyMedium
             )
         }
         Row(modifier = Modifier.padding(4.dp)) {
@@ -156,8 +193,7 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.list[0].speed} mph",
-                style = MaterialTheme.typography.bodyMedium
+                text = "${weather.list[0].speed} mph", style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -167,7 +203,8 @@ fun HumidityWindPressureRow(weather: Weather) {
 fun WeatherStateImage(imageUrl: String) {
 
     AsyncImage(
-        model = imageUrl, contentDescription = "icon image",
+        model = imageUrl,
+        contentDescription = "icon image",
         modifier = Modifier.size(80.dp),
         onLoading = {
             Log.d("ASYNC_IMAGE", "Loading...")
