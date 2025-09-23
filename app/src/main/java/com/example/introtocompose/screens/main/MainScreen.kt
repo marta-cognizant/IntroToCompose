@@ -4,11 +4,16 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,8 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -33,6 +41,7 @@ import coil3.compose.AsyncImage
 import com.example.introtocompose.R
 import com.example.introtocompose.data.DataOrException
 import com.example.introtocompose.model.Weather
+import com.example.introtocompose.model.WeatherItem
 import com.example.introtocompose.utils.formatDate
 import com.example.introtocompose.utils.formatDateTime
 import com.example.introtocompose.utils.formatDecimals
@@ -118,8 +127,87 @@ fun MainContent(data: Weather) {
         HumidityWindPressureRow(weather = data)
         Divider()
         SunsetSunriseRow(weather = data)
+        Text(
+            text = "This week",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxWidth(),
+            color = Color(0xFFEEF1EF),
+            shape = RoundedCornerShape(size = 14.dp)
+        ) {
+            LazyColumn(
+                modifier = Modifier.padding(2.dp),
+                contentPadding = PaddingValues(1.dp)
+            ) {
+                items(items = data.list) { item: WeatherItem ->
+                    WeatherDetailRow(weather = item)
+                }
+            }
+        }
     }
 
+}
+
+@Composable
+fun WeatherDetailRow(weather: WeatherItem) {
+    val imageUrl = "https://openweathermap.org/img/wn/${weather.weather[0].icon}.png"
+
+    Surface(
+        modifier = Modifier
+            .padding(3.dp)
+            .fillMaxWidth(),
+        shape = CircleShape.copy(topEnd = CornerSize(6.dp)),
+        color = Color.White
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                formatDate(weather.dt)
+                    .split(",")[0],
+                modifier = Modifier.padding(start = 5.dp)
+            )
+            WeatherStateImage(imageUrl = imageUrl)
+            Surface(
+                modifier = Modifier.padding(0.dp),
+                shape = CircleShape,
+                color = Color(0xFFFFC400)
+            ) {
+                Text(
+                    weather.weather[0].description,
+                    modifier = Modifier.padding(4.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Text(text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.Blue.copy(alpha = 0.7f),
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                ) {
+                    append(formatDecimals(weather.temp.max) + "°")
+                }
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.LightGray,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                ) {
+                    append(formatDecimals(weather.temp.min) + "°")
+                }
+            })
+
+        }
+
+    }
 }
 
 @Composable
