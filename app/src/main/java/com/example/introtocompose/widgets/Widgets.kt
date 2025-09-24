@@ -47,15 +47,11 @@ fun WeatherDetailRow(weather: WeatherItem) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                formatDate(weather.dt)
-                    .split(",")[0],
-                modifier = Modifier.padding(start = 5.dp)
+                formatDate(weather.dt).split(",")[0], modifier = Modifier.padding(start = 5.dp)
             )
             WeatherStateImage(imageUrl = imageUrl)
             Surface(
-                modifier = Modifier.padding(0.dp),
-                shape = CircleShape,
-                color = Color(0xFFFFC400)
+                modifier = Modifier.padding(0.dp), shape = CircleShape, color = Color(0xFFFFC400)
             ) {
                 Text(
                     weather.weather[0].description,

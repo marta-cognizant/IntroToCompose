@@ -5,11 +5,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil3.ImageLoader
 import com.example.introtocompose.data.DataOrException
 import com.example.introtocompose.model.Weather
 import com.example.introtocompose.repository.WeatherRepository
-import com.example.introtocompose.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch

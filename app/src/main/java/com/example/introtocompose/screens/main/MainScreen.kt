@@ -12,8 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +31,7 @@ import androidx.navigation.NavController
 import com.example.introtocompose.data.DataOrException
 import com.example.introtocompose.model.Weather
 import com.example.introtocompose.model.WeatherItem
+import com.example.introtocompose.navigation.WeatherScreens
 import com.example.introtocompose.utils.formatDate
 import com.example.introtocompose.utils.formatDecimals
 import com.example.introtocompose.widgets.HumidityWindPressureRow
@@ -42,11 +41,17 @@ import com.example.introtocompose.widgets.WeatherDetailRow
 import com.example.introtocompose.widgets.WeatherStateImage
 
 @Composable
-fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
+    city: String?
+) {
+    Log.d("CITY_NAME", "MainScreen: $city")
+
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
-        value = mainViewModel.getWeatherData(city = "Thorn")
+        value = mainViewModel.getWeatherData(city = city.toString())
     }.value
 
     if (weatherData.loading == true) {
@@ -62,9 +67,12 @@ fun MainScaffold(weather: Weather, navController: NavController) {
     Scaffold(topBar = {
         WeatherAppBar(
             title = weather.city.name + ", ${weather.city.country}",
-            icon = Icons.Default.ArrowBack,
+            // icon = null, //Icons.Default.ArrowBack,
             navController = navController,
             elevation = 5.dp,
+            onAddActionClicked = {
+                navController.navigate(WeatherScreens.SearchScreen.name)
+            }
         ) {
             Log.d("WEATHER_APP_BAR", "ButtonClicked!")
         }
@@ -146,3 +154,5 @@ fun MainContent(data: Weather) {
     }
 
 }
+
+
