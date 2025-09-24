@@ -1,4 +1,4 @@
-package com.example.introtocompose.screens.searchscreen
+package com.example.introtocompose.screens.search
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
