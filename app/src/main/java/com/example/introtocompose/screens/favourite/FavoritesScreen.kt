@@ -1,4 +1,4 @@
-package com.example.introtocompose.screens.favourit
+package com.example.introtocompose.screens.favourite
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

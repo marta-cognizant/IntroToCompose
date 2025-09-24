@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.introtocompose.screens.about.AboutScreen
-import com.example.introtocompose.screens.favourit.FavoritesScreen
+import com.example.introtocompose.screens.favourite.FavoritesScreen
 import com.example.introtocompose.screens.main.MainScreen
 import com.example.introtocompose.screens.main.MainViewModel
 import com.example.introtocompose.screens.search.SearchScreen

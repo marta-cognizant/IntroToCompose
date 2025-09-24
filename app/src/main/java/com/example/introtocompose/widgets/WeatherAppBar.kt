@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,7 +70,9 @@ fun WeatherAppBar(
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp
-                )
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
         },
         modifier = Modifier.shadow(elevation = elevation),
@@ -139,8 +142,10 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
             items.forEachIndexed { index, text ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = text,
-                            fontWeight = FontWeight.W300)
+                        Text(
+                            text = text,
+                            fontWeight = FontWeight.W300
+                        )
                     },
                     leadingIcon = {
                         Icon(
