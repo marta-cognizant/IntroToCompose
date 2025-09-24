@@ -43,7 +43,9 @@ fun WeatherSplashScreen(navController: NavController) {
                         .getInterpolation(it)
                 }))
         delay(2000L)
-        navController.navigate(WeatherScreens.MainScreen.name + "/$defaultCity")
+        navController.navigate(WeatherScreens.MainScreen.name + "/$defaultCity") {
+            popUpTo(0)
+        }
     })
 
     Surface(

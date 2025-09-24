@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
@@ -30,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -39,8 +41,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.introtocompose.model.Favorite
 import com.example.introtocompose.navigation.WeatherScreens
+import com.example.introtocompose.screens.favourite.FavoriteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@Preview
@@ -51,6 +56,7 @@ fun WeatherAppBar(
     isMainScreen: Boolean = true,
     elevation: Dp = 0.dp,
     navController: NavController,
+    favoriteViewMode: FavoriteViewModel = hiltViewModel(),
     onAddActionClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {}
 ) {
@@ -110,6 +116,24 @@ fun WeatherAppBar(
                     modifier = Modifier.clickable {
                         onButtonClicked.invoke()
                     })
+            }
+            if (isMainScreen) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "favorites icon",
+                    modifier = Modifier
+                        .scale(0.9f)
+                        .clickable {
+                            val dataList = title.split(",")
+                            favoriteViewMode.insertFavorite(
+                                Favorite(
+                                    city = dataList[0],
+                                    country = dataList[1].trim()
+                                )
+                            )
+                        },
+                    tint = Color.Red.copy(alpha = 0.6f)
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

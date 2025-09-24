@@ -46,8 +46,6 @@ fun MainScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
     city: String?
 ) {
-    Log.d("CITY_NAME", "MainScreen: $city")
-
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
@@ -64,13 +62,9 @@ fun MainScreen(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScaffold(weather: Weather, navController: NavController) {
-
-
-
     Scaffold(topBar = {
         WeatherAppBar(
             title = weather.city.name + ", ${weather.city.country}",
-            // icon = null, //Icons.Default.ArrowBack,
             navController = navController,
             elevation = 5.dp,
             onAddActionClicked = {
