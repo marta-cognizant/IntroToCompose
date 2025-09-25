@@ -21,6 +21,7 @@ This branch contains implementation of a simple "Quiz" application (Trivia app).
 
 ### weather_app
 This branch contains implementation of a "Weather" application, that allow the user to check weather forecast.
+> IMPORTANT: this app require OpenWeather API key!!
 
 
  
