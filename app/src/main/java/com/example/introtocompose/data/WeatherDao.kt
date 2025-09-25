@@ -40,7 +40,7 @@ interface WeatherDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateUnit(unit: Unit)
 
-    @Query("DELETE from fav_tbl")
+    @Query("DELETE from settings_tbl")
     suspend fun deleteAllUnits()
 
     @Delete

@@ -118,7 +118,7 @@ fun SunsetSunriseRow(weather: Weather) {
 }
 
 @Composable
-fun HumidityWindPressureRow(weather: Weather) {
+fun HumidityWindPressureRow(weather: WeatherItem, isImperial: Boolean) {
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -133,7 +133,7 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.list[0].humidity}%", style = MaterialTheme.typography.bodyMedium
+                text = "${weather.humidity}%", style = MaterialTheme.typography.bodyMedium
             )
         }
         Row(modifier = Modifier.padding(4.dp)) {
@@ -143,7 +143,7 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.list[0].pressure} psi",
+                text = "${weather.pressure} psi",
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -154,7 +154,8 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.list[0].speed} mph", style = MaterialTheme.typography.bodyMedium
+                text = "${weather.speed} " + if (isImperial) "mph" else "m/s",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

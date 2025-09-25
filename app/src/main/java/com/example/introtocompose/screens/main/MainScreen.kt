@@ -19,7 +19,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +37,7 @@ import com.example.introtocompose.data.DataOrException
 import com.example.introtocompose.model.Weather
 import com.example.introtocompose.model.WeatherItem
 import com.example.introtocompose.navigation.WeatherScreens
+import com.example.introtocompose.screens.settings.SettingsViewModel
 import com.example.introtocompose.utils.formatDate
 import com.example.introtocompose.utils.formatDecimals
 import com.example.introtocompose.widgets.HumidityWindPressureRow
@@ -44,24 +50,40 @@ import com.example.introtocompose.widgets.WeatherStateImage
 fun MainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     city: String?
 ) {
-    val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
-        initialValue = DataOrException(loading = true)
-    ) {
-        value = mainViewModel.getWeatherData(city = city.toString())
-    }.value
+    val curCity: String = if (city!!.isBlank()) "Toruń" else city
+    val unitFromDb = settingsViewModel.unitList.collectAsState().value
+    var unit by remember {
+        mutableStateOf("imperial")
+    }
+    var isImperial by remember {
+        mutableStateOf(false)
+    }
 
-    if (weatherData.loading == true) {
-        CircularProgressIndicator()
-    } else if (weatherData.data != null) {
-        MainScaffold(weather = weatherData.data!!, navController)
+    if (!unitFromDb.isNullOrEmpty()) {
+        unit = unitFromDb[0].unit.split(" ")[0].lowercase()
+        isImperial = unit == "imperial"
+
+        val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
+            initialValue = DataOrException(loading = true)
+        ) {
+            value = mainViewModel.getWeatherData(city = curCity,
+                units = unit)
+        }.value
+
+        if (weatherData.loading == true) {
+            CircularProgressIndicator()
+        } else if (weatherData.data != null) {
+            MainScaffold(weather = weatherData.data!!, navController, isImperial = isImperial)
+        }
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScaffold(weather: Weather, navController: NavController) {
+fun MainScaffold(weather: Weather, navController: NavController, isImperial: Boolean) {
     Scaffold(topBar = {
         WeatherAppBar(
             title = weather.city.name + ", ${weather.city.country}",
@@ -75,13 +97,13 @@ fun MainScaffold(weather: Weather, navController: NavController) {
         }
     }) { paddingValues ->
         Scaffold(modifier = Modifier.padding(paddingValues)) {
-            MainContent(data = weather)
+            MainContent(data = weather, isImperial = isImperial)
         }
     }
 }
 
 @Composable
-fun MainContent(data: Weather) {
+fun MainContent(data: Weather, isImperial: Boolean) {
     val imageUrl = "https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png"
     val temperature = formatDecimals(data.list[0].temp.day) + "°"
     val description = data.list[0].weather[0].main
@@ -123,7 +145,7 @@ fun MainContent(data: Weather) {
                 Text(text = description, fontStyle = FontStyle.Italic)
             }
         }
-        HumidityWindPressureRow(weather = data)
+        HumidityWindPressureRow(weather = data.list[0], isImperial = isImperial)
         Divider()
         SunsetSunriseRow(weather = data)
         Text(
